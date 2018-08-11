@@ -18,14 +18,28 @@ public class LevelChunkGenerator:MonoBehaviour {
     public GameObject GenerateLevelPiece() {
         GameObject levelPiece = new GameObject("Level");
         GenerateObstaclePiece(levelDesignLib).transform.parent = levelPiece.transform;
-        GenerateGroundArea(groundCubesLib, chunkCount, w, l, w/3).transform.parent = levelPiece.transform;
+        GameObject groundParent = GenerateGroundArea(groundCubesLib, chunkCount, w, l, 2 * w / 3);
+        groundParent.transform.parent = levelPiece.transform;
+
+        GenerateProps(groundParent);
         return levelPiece;
     }
+
+    private GameObject GenerateProps(GameObject groundParent) {
+        GameObject g = new GameObject("Props");
+        for (int i = 0; i < groundParent.transform.childCount; i++) {
+            if (UnityEngine.Random.Range(0f, 1f) < 0.5f) {
+                Transform prop = Instantiate(groundParent.transform.GetChild(i), new Vector3(0, 0.5f, 0), new Quaternion(), g.transform);
+            }
+        }
+        return g;
+    }
+
 
     public GameObject GenerateObstaclePiece(Transform[] obstaclePrefLib) {
         GameObject obstacles = new GameObject("Obstacles");
         if (obstaclePrefLib.Length == 0) return obstacles;
-        int r = Random.Range(0, obstaclePrefLib.Length);
+        int r = UnityEngine.Random.Range(0, obstaclePrefLib.Length);
         Instantiate(obstaclePrefLib[r]).parent = obstacles.transform;
         return obstacles;
     }
