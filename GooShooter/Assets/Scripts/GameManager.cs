@@ -2,15 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour {
+public class GameManager : MonoBehaviour
+{
+	private static GameManager instance;
 
-	// Use this for initialization
-	void Start () {
-		Debug.Log("Test");
+    public static GameManager Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
+
+	private void Awake()
+	{
+		instance = this;
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+   
 }
