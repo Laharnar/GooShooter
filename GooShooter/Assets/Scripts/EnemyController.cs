@@ -22,13 +22,13 @@ public class EnemyController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        //nav.destination = GameplayManager.m.player.position;
+        nav.destination = GameManager.Instance.player.transform.position;
     }
 
     private void OnCollisionEnter(Collision collision) {
-        /*if (collision.transform == GameplayManager.m.player.transform) {
+        if (collision.transform == GameManager.Instance.player.transform) {
             Death();
-        }*/
+        }
     }
 
     public void Damage(int dmg, Vector3 recievingDir) {
