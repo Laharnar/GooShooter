@@ -161,19 +161,19 @@ public class LevelChunkGenerator:MonoBehaviour {
             //finalMap[(int)v.x-1, (int)v.y] = finalMap[(int) v.x, (int)v.y];
             //finalMap[(int)v.x, (int)v.y-1] = finalMap[(int) v.x, (int)v.y];
             int required = -1;
-            if (x + 1 < w && finalMap[x + 1, y] == required && Random.Range(0, 1) < 0.9f) {
+            if (x + 1 < w && finalMap[x + 1, y] == required && Random.Range(0, 1) < 0.3f) {
                 finalMap[x + 1, y] = finalMap[x, y];
                 floodQue.Enqueue(generatedPositions[x + 1, y]);
             }
-            if (x - 1 >= 0 && finalMap[x - 1, y] == required && Random.Range(0, 1) < 0.9f) {
+            if (x - 1 >= 0 && finalMap[x - 1, y] == required && Random.Range(0, 1) < 0.3f) {
                 finalMap[x - 1, y] = finalMap[x, y];
                 floodQue.Enqueue(generatedPositions[x - 1, y]);
             }
-            if (y + 1 < w && finalMap[x, y + 1] == required && Random.Range(0, 1) < 0.9f) {
+            if (y + 1 < w && finalMap[x, y + 1] == required && Random.Range(0, 1) < 0.3f) {
                 finalMap[x, y + 1] = finalMap[x, y];
                 floodQue.Enqueue(generatedPositions[x, y + 1]);
             }
-            if (y - 1 >= 0 && finalMap[x, y - 1] == required && Random.Range(0, 1) < 0.9f) {
+            if (y - 1 >= 0 && finalMap[x, y - 1] == required && Random.Range(0, 1) < 0.3f) {
                 finalMap[x, y - 1] = finalMap[x, y];
                 floodQue.Enqueue(generatedPositions[x, y - 1]);
             }
