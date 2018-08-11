@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
 	private static GameManager instance;
+    public GameObject player;
 
     public static GameManager Instance
     {
@@ -17,6 +18,10 @@ public class GameManager : MonoBehaviour
 	private void Awake()
 	{
 		instance = this;
+
+        if (player== null) {
+            player = GameObject.FindWithTag("Player");
+        }
 	}
 	
    
