@@ -16,9 +16,10 @@ public class PlayerController : MonoBehaviour
     public GameObject playButton;
     public UiController uiController;
     public Rigidbody rig;
-
+    public AudioSource shootSfx;
     public int hp = 100;
 
+    private float timeOfLastShot = 0;
     private void Start()
     {
         cameraOffset = cam.transform.position;
@@ -41,8 +42,13 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
+            if(Time.realtimeSinceStartup - timeOfLastShot < 0.1)
+            {
+                return;
+            }
+            timeOfLastShot = Time.realtimeSinceStartup;
             playerAnimator.SetTrigger("Shoot");
-            StartCoroutine(ShootWithDelay(0.3f));
+            StartCoroutine(ShootWithDelay(0.1f));
         }
     }
 
@@ -63,7 +69,9 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         Bullet bullet = Instantiate<Bullet>(bulletPrefab, gunExitPoint.position, Quaternion.identity, null);
-        bullet.Shoot(transform.forward);
+        bullet.Shoot(transform.forward + transform.right * UnityEngine.Random.Range(-1f, 1f)* 0.15f);
+        shootSfx.pitch = UnityEngine.Random.Range(0.7f, 1f);
+        shootSfx.Play();
     }
 
     private void CameraFollowPlayer()
