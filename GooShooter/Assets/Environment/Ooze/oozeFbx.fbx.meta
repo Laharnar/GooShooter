@@ -1,43 +1,35 @@
 fileFormatVersion: 2
-guid: faea8d933abc9254a95e9c190ebb7e7f
+guid: 1dbf0260693b22d498d179befd868687
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: Armature.001
+    100000: Armature
     100002: Bone
     100004: Bone.001
-    100006: Bone.003
-    100008: Bone.003_end
-    100010: Bone.005
-    100012: Bone.006
-    100014: Bone.006_end
-    100016: Bone_end
-    100018: Robot
-    100020: //RootNode
-    400000: Armature.001
+    100006: Bone.002
+    100008: Bone.002_end
+    100010: Bone.003
+    100012: Bone.003_end
+    100014: Ooze
+    100016: //RootNode
+    400000: Armature
     400002: Bone
     400004: Bone.001
-    400006: Bone.003
-    400008: Bone.003_end
-    400010: Bone.005
-    400012: Bone.006
-    400014: Bone.006_end
-    400016: Bone_end
-    400018: Robot
-    400020: //RootNode
-    2100000: Material.004
-    2100002: Material.001
-    2100004: Material.006
-    2100006: Material.007
-    4300000: Robot
-    7400000: robot_move
-    7400002: robot_shoot.001
+    400006: Bone.002
+    400008: Bone.002_end
+    400010: Bone.003
+    400012: Bone.003_end
+    400014: Ooze
+    400016: //RootNode
+    2100000: Material.009
+    4300000: Ooze
+    7400000: ooze_move.001
+    7400002: ooze_die
     9500000: //RootNode
-    13700000: Robot
-    2186277476908879412: ImportLogs
+    13700000: Ooze
   externalObjects: {}
   materials:
-    importMaterials: 0
+    importMaterials: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
