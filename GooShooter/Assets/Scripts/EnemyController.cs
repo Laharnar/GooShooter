@@ -9,6 +9,7 @@ using UnityEngine.AI;
 public class EnemyController : MonoBehaviour {
 
     public int health = 5;
+    public int slimeDmg = 10;
 
     public Animator anim;
     public NavMeshAgent nav;
@@ -25,8 +26,9 @@ public class EnemyController : MonoBehaviour {
         nav.destination = GameManager.Instance.player.transform.position;
     }
 
-    private void OnCollisionEnter(Collision collision) {
+    private void OnTriggerEnter(Collider collision) {
         if (collision.transform == GameManager.Instance.player.transform) {
+            GameManager.Instance.player.GetComponent<PlayerController>().Damage(slimeDmg);
             Death();
         }
     }
