@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
 
     public List<Transform> groundObjs = new List<Transform>();
     public int oozeDmg=1;
+    public float oozeDmgRate = 1;
 
     public static GameManager Instance
     {
