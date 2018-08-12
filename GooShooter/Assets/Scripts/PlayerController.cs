@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator GetDmgFromOoze() {
         while (true) {
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(GameManager.Instance.oozeDmgRate);
             Block b = GameManager.GetBlock(transform.position);
             if (b) {
                 if (b.isSlimeActive)
