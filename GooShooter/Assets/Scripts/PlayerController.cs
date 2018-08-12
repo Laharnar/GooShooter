@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class PlayerController : MonoBehaviour
 
     public Bullet bulletPrefab;
     public Transform gunExitPoint;
+
+    public int hp = 100;
 
     private void Start()
     {
@@ -33,6 +36,16 @@ public class PlayerController : MonoBehaviour
             playerAnimator.SetTrigger("Shoot");
             StartCoroutine(ShootWithDelay(0.3f));
         }
+    }
+
+    internal void Damage(int slimeDmg) {
+        hp -= slimeDmg;
+        if (hp <= 0)
+            Death();
+    }
+
+    private void Death() {
+        Destroy(gameObject);
     }
 
     private IEnumerator ShootWithDelay(float delay)

@@ -10,6 +10,7 @@ public class EnemyController : MonoBehaviour
 {
 
     public int health = 5;
+    public int slimeDmg = 10;
 
     public Animator anim;
     public NavMeshAgent nav;
@@ -23,13 +24,15 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        nav.destination = GameManager.Instance.player.transform.position;
+        if (GameManager.Instance.player != null)
+            nav.destination = GameManager.Instance.player.transform.position;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collision)
     {
         if (collision.transform == GameManager.Instance.player.transform)
         {
+            GameManager.Instance.player.GetComponent<PlayerController>().Damage(slimeDmg);
             Death();
         }
     }
@@ -46,10 +49,14 @@ public class EnemyController : MonoBehaviour
 
     private void Death()
     {
-        // TODO: spawn effects/death animation
+        RaycastHit hit;
+        if (Physics.Raycast(new Ray(transform.position, Vector3.down * 2), out hit))
+        {
+            Transform groundCube = hit.transform;
+            groundCube.GetComponent<Block>().ToggleSlime(true);
+        }
         anim.SetTrigger("Death");
         Destroy(gameObject, 1);
-        
     }
 
     public void SpawnOoze()
