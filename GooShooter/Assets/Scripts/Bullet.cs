@@ -15,7 +15,7 @@ public class Bullet : MonoBehaviour
         rig.AddForce(direction * speed);
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "Enemy")
         {

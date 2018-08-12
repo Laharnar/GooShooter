@@ -28,10 +28,9 @@ public class EnemyController : MonoBehaviour
             nav.destination = GameManager.Instance.player.transform.position;
     }
 
-    private void OnTriggerEnter(Collider collision)
-    {
-        if (collision.transform == GameManager.Instance.player.transform)
-        {
+
+    private void OnTriggerEnter(Collider collision) {
+        if (collision.transform == GameManager.Instance.player.transform) {
             GameManager.Instance.player.GetComponent<PlayerController>().Damage(slimeDmg);
             Death();
         }
