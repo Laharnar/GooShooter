@@ -31,7 +31,7 @@ public class EnemyController : MonoBehaviour {
         }
     }
 
-    public void Damage(int dmg, Vector3 recievingDir) {
+    public void Damage(int dmg) {
         health -= dmg;
         if (health <=0) {
             Death();

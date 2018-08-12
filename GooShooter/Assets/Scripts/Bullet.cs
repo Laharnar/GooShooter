@@ -14,17 +14,18 @@ public class Bullet : MonoBehaviour {
 
     public void Init(Vector3 flyDir) {
         this.flyDir = flyDir.normalized;
+        transform.forward = flyDir;
     }
 
     // Update is called once per frame
-    void Update () {
-        rig.MovePosition(transform.position + flyDir * flySpeed);
+    void FixedUpdate () {
+        rig.MovePosition(transform.position + transform.forward * flySpeed*Time.deltaTime);
 	}
 
     private void OnCollisionEnter(Collision collision) {
         
         if (collision.gameObject.tag == "Enemy") {
-            // collision.gameObject.GetComponent<EnemyController>().Damage(damage);
+            collision.gameObject.GetComponent<EnemyController>().Damage(damage);
             // spawn effects, etc
             Destroy(gameObject);
         }
