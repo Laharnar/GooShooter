@@ -39,10 +39,10 @@ public class EnemyController : MonoBehaviour {
         health -= dmg;
 
         Vector3 snapPos = new Vector3(transform.position.x-transform.position.x%1, 0, transform.position.z-transform.position.z%1);
-        for (int i = 0; i < GameManager.Instance.objs.Count; i++) {
-            Vector3 p = new Vector3(GameManager.Instance.objs[i].transform.position.x, 0, GameManager.Instance.objs[i].transform.position.z);
+        for (int i = 0; i < GameManager.Instance.groundObjs.Count; i++) {
+            Vector3 p = new Vector3(GameManager.Instance.groundObjs[i].transform.position.x, 0, GameManager.Instance.groundObjs[i].transform.position.z);
             if (p == snapPos) {
-                GameManager.Instance.objs[i].GetComponent<Block>().ToggleSlime(true);
+                GameManager.Instance.groundObjs[i].GetComponent<Block>().ToggleSlime(true);
             }
         }
 

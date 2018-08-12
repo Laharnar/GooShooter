@@ -10,7 +10,7 @@ public class Block : MonoBehaviour
     
     private void Start()
     {
-        GameManager.Instance.objs.Add(transform);
+        GameManager.Instance.groundObjs.Add(transform);
 
         meshRenderer = GetComponentInChildren<MeshRenderer>();
         Material mat = meshRenderer.sharedMaterials[0];
