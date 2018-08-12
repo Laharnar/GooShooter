@@ -10,6 +10,7 @@ public class LevelChunkGenerator:MonoBehaviour {
     public int chunkCount = 4;
     public int w=30, l=30;
     public float rndHeight = 0.2f;
+    public float cutPercentage = 0.9f;
 
     private void Start() {
         GenerateLevelPiece();
@@ -18,14 +19,28 @@ public class LevelChunkGenerator:MonoBehaviour {
     public GameObject GenerateLevelPiece() {
         GameObject levelPiece = new GameObject("Level");
         GenerateObstaclePiece(levelDesignLib).transform.parent = levelPiece.transform;
-        GenerateGroundArea(groundCubesLib, chunkCount, w, l, w/3).transform.parent = levelPiece.transform;
+        GameObject groundParent = GenerateGroundArea(groundCubesLib, chunkCount, w, l, w*cutPercentage);
+        groundParent.transform.parent = levelPiece.transform;
+
+        GenerateProps(groundParent);
         return levelPiece;
     }
+
+    private GameObject GenerateProps(GameObject groundParent) {
+        GameObject g = new GameObject("Props");
+        for (int i = 0; i < groundParent.transform.childCount; i++) {
+            if (UnityEngine.Random.Range(0f, 1f) < 0.5f) {
+                Transform prop = Instantiate(groundParent.transform.GetChild(i), new Vector3(0, 0.5f, 0), new Quaternion(), g.transform);
+            }
+        }
+        return g;
+    }
+
 
     public GameObject GenerateObstaclePiece(Transform[] obstaclePrefLib) {
         GameObject obstacles = new GameObject("Obstacles");
         if (obstaclePrefLib.Length == 0) return obstacles;
-        int r = Random.Range(0, obstaclePrefLib.Length);
+        int r = UnityEngine.Random.Range(0, obstaclePrefLib.Length);
         Instantiate(obstaclePrefLib[r]).parent = obstacles.transform;
         return obstacles;
     }
@@ -65,54 +80,110 @@ public class LevelChunkGenerator:MonoBehaviour {
         // flood those values
         // Note: 0 means unassigned
         int lastI = 0;
+        bool diamantGen = false;
         while (floodQue.Count > 0) {
             Vector3 p = floodQue.Dequeue();
             int x = (int)p.x;
             int y = (int)p.y;
-            
-            int i = Random.Range(0, cubePrefs.Length);
-            if (i == lastI) {
-                i = (lastI + 1)%cubePrefs.Length;
-            }
-            lastI = i;
-            if (i == 0)
-            if (x + 1 < w && finalMap[x + 1, y] == 0 && Random.Range(0, 1) < 0.7f) {
-                finalMap[x + 1, y] = finalMap[x, y];
-                floodQue.Enqueue(generatedPositions[x+1, y]);
-            }
-            if (i == 1)
-            if (x-1 >= 0 && finalMap[x - 1, y] == 0 && Random.Range(0, 1) < 0.7f) {
-                finalMap[x - 1, y] = finalMap[x, y];
-                floodQue.Enqueue(generatedPositions[x-1, y]);
-            }
-            if (i == 2)
-            if (y+ 1 < l && finalMap[x, y + 1] == 0 && Random.Range(0, 1) < 0.7f) {
-                finalMap[x, y + 1] = finalMap[x, y];
-                floodQue.Enqueue(generatedPositions[x, y+1]);
-            }
-            if (i == 3)
-            if (y - 1 >= 0 && finalMap[x, y - 1] == 0 && Random.Range(0, 1) < 0.7f) {
-                finalMap[x, y - 1] = finalMap[x, y];
-                floodQue.Enqueue(generatedPositions[x, y-1]);
-            }
+
+            if (diamantGen) {
+                int i = Random.Range(0, cubePrefs.Length);
+                if (i == lastI) {
+                    i = (lastI + 1) % cubePrefs.Length;
+                }
+                lastI = i;
+                bool oneOnly = true;
+                if ((oneOnly && i == 0) || !oneOnly) {
+                    if (x + 1 < w && finalMap[x + 1, y] == 0 && Random.Range(0, 1) < 0.7f) {
+                        finalMap[x + 1, y] = finalMap[x, y];
+                        floodQue.Enqueue(generatedPositions[x + 1, y]);
+                    }
+                }
+                if ((oneOnly && i == 1) || !oneOnly) {
+                    if (x - 1 >= 0 && finalMap[x - 1, y] == 0 && Random.Range(0, 1) < 0.7f) {
+                        finalMap[x - 1, y] = finalMap[x, y];
+                        floodQue.Enqueue(generatedPositions[x - 1, y]);
+                    }
+                }
+                if ((oneOnly && i == 2) || !oneOnly) {
+                    if (y + 1 < l && finalMap[x, y + 1] == 0 && Random.Range(0, 1) < 0.7f) {
+                        finalMap[x, y + 1] = finalMap[x, y];
+                        floodQue.Enqueue(generatedPositions[x, y + 1]);
+                    }
+                }
+                if ((oneOnly && i == 3) || !oneOnly) {
+                    if (y - 1 >= 0 && finalMap[x, y - 1] == 0 && Random.Range(0, 1) < 0.7f) {
+                        finalMap[x, y - 1] = finalMap[x, y];
+                        floodQue.Enqueue(generatedPositions[x, y - 1]);
+                    }
+                }
 
 
+                if (x + 1 < w && y + 1 < l && finalMap[x + 1, y + 1] == 0 && Random.Range(0, 1) < 0.3f) {
+                    finalMap[x + 1, y + 1] = finalMap[x, y];
+                    floodQue.Enqueue(generatedPositions[x + 1, y + 1]);
+                }
+                if (x + 1 < w && y - 1 >= 0 && finalMap[x + 1, y - 1] == 0 && Random.Range(0, 1) < 0.3f) {
+                    finalMap[x + 1, y - 1] = finalMap[x, y];
+                    floodQue.Enqueue(generatedPositions[x + 1, y - 1]);
+                }
+                if (x - 1 >= 0 && y + 1 < l && finalMap[x - 1, y + 1] == 0 && Random.Range(0, 1) < 0.3f) {
+                    finalMap[x - 1, y + 1] = finalMap[x, y];
+                    floodQue.Enqueue(generatedPositions[x - 1, y + 1]);
+                }
+                if (x - 1 >= 0 && y - 1 >= 0 && finalMap[x - 1, y - 1] == 0 && Random.Range(0, 1) < 0.3f) {
+                    finalMap[x - 1, y - 1] = finalMap[x, y];
+                    floodQue.Enqueue(generatedPositions[x - 1, y - 1]);
+                }
+            } else {
+                int i = Random.Range(0, cubePrefs.Length);
+                if (i == lastI) {
+                    i = (lastI + 1) % cubePrefs.Length;
+                }
+                lastI = i;
+                bool oneOnly = true;
+                if ((oneOnly && i == 0 )|| !oneOnly) {
+                    if (x + 1 < w && finalMap[x + 1, y] == 0 && Random.Range(0, 1) < 0.3f) {
+                        finalMap[x + 1, y] = finalMap[x, y];
+                        floodQue.Enqueue(generatedPositions[x + 1, y]);
+                    }
+                }
+                if ((oneOnly && i == 1) || !oneOnly) {
+                    if (x - 1 >= 0 && finalMap[x - 1, y] == 0 && Random.Range(0, 1) < 0.3f) {
+                        finalMap[x - 1, y] = finalMap[x, y];
+                        floodQue.Enqueue(generatedPositions[x - 1, y]);
+                    }
+                }
+                if ((oneOnly && i == 2) || !oneOnly) {
+                    if (y + 1 < l && finalMap[x, y + 1] == 0 && Random.Range(0, 1) < 0.3f) {
+                        finalMap[x, y + 1] = finalMap[x, y];
+                        floodQue.Enqueue(generatedPositions[x, y + 1]);
+                    }
+                }
+                if ((oneOnly && i == 3) || !oneOnly) {
+                    if (y - 1 >= 0 && finalMap[x, y - 1] == 0 && Random.Range(0, 1) < 0.3f) {
+                        finalMap[x, y - 1] = finalMap[x, y];
+                        floodQue.Enqueue(generatedPositions[x, y - 1]);
+                    }
+                }
 
-            if (x + 1 < w && y + 1 < l && finalMap[x + 1, y + 1] == 0 && Random.Range(0, 1) < 0.3f) {
-                finalMap[x + 1, y+1] = finalMap[x, y];
-                floodQue.Enqueue(generatedPositions[x + 1, y+1]);
-            }
-            if (x + 1 < w && y - 1 >= 0 && finalMap[x + 1, y - 1] == 0 && Random.Range(0, 1) < 0.3f) {
-                finalMap[x + 1, y -1] = finalMap[x, y];
-                floodQue.Enqueue(generatedPositions[x + 1, y -1]);
-            }
-            if (x - 1 >= 0 && y + 1 < l && finalMap[x - 1, y + 1] == 0 && Random.Range(0, 1) < 0.3f) {
-                finalMap[x - 1, y + 1] = finalMap[x, y];
-                floodQue.Enqueue(generatedPositions[x - 1, y + 1]);
-            }
-            if (x - 1 >= 0 && y - 1 >= 0 && finalMap[x - 1, y - 1] == 0 && Random.Range(0, 1) < 0.3f) {
-                finalMap[x - 1, y - 1] = finalMap[x, y];
-                floodQue.Enqueue(generatedPositions[x - 1, y - 1]);
+
+                if (x + 1 < w && y + 1 < l && finalMap[x + 1, y + 1] == 0 && Random.Range(0, 1) < 0.7f) {
+                    finalMap[x + 1, y + 1] = finalMap[x, y];
+                    floodQue.Enqueue(generatedPositions[x + 1, y + 1]);
+                }
+                if (x + 1 < w && y - 1 >= 0 && finalMap[x + 1, y - 1] == 0 && Random.Range(0, 1) < 0.7f) {
+                    finalMap[x + 1, y - 1] = finalMap[x, y];
+                    floodQue.Enqueue(generatedPositions[x + 1, y - 1]);
+                }
+                if (x - 1 >= 0 && y + 1 < l && finalMap[x - 1, y + 1] == 0 && Random.Range(0, 1) < 0.7f) {
+                    finalMap[x - 1, y + 1] = finalMap[x, y];
+                    floodQue.Enqueue(generatedPositions[x - 1, y + 1]);
+                }
+                if (x - 1 >= 0 && y - 1 >= 0 && finalMap[x - 1, y - 1] == 0 && Random.Range(0, 1) < 0.7f) {
+                    finalMap[x - 1, y - 1] = finalMap[x, y];
+                    floodQue.Enqueue(generatedPositions[x - 1, y - 1]);
+                }
             }
         }
         /*float[] randomWeights = new float[cubePrefs.Length];
