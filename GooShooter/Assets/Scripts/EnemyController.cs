@@ -16,6 +16,9 @@ public class EnemyController : MonoBehaviour
     public NavMeshAgent nav;
     public Collider coll;
 
+    public ParticleSystem onHitPs;
+    public ParticleSystem onDeathPs;
+    public SkinnedMeshRenderer smr;
 
     // Use this for initialization
     void Start()
@@ -48,16 +51,19 @@ public class EnemyController : MonoBehaviour
     private bool isAlive = true;
     public void Damage(int dmg)
     {
-        health -= dmg;
+        
         if (!isAlive)
         {
             return;
         }
+        health -= dmg;
+        onHitPs.Play();
         if (health <= 0)
         {
             isAlive = false;
             Death();
         }
+
     }
 
     private void Death()
@@ -70,8 +76,10 @@ public class EnemyController : MonoBehaviour
 
     private void DelayedDeath()
     {
+        onDeathPs.Play();
         SpawnOoze(transform.position);
-        Destroy(gameObject);
+        smr.enabled = false;
+        Destroy(gameObject, 2);
     }
 
     public void SpawnOoze(Vector3 pos)
