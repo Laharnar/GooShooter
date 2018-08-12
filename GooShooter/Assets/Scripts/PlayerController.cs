@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
     private Vector3 cameraOffset;
     public Animator playerAnimator;
 
+    public Bullet bulletPrefab;
+    public Transform gunExitPoint;
+
     private void Start()
     {
         cameraOffset = cam.transform.position;
@@ -28,7 +31,15 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             playerAnimator.SetTrigger("Shoot");
+            StartCoroutine(ShootWithDelay(0.3f));
         }
+    }
+
+    private IEnumerator ShootWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Bullet bullet = Instantiate<Bullet>(bulletPrefab, gunExitPoint.position, Quaternion.identity, null);
+        bullet.Shoot(transform.forward);
     }
 
     private void CameraFollowPlayer()
