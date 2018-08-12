@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     public Transform gunExitPoint;
     public GameObject playButton;
     public UiController uiController;
+    public Rigidbody rig;
 
     public int hp = 100;
 
@@ -38,7 +39,7 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateShooting()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             playerAnimator.SetTrigger("Shoot");
             StartCoroutine(ShootWithDelay(0.3f));
@@ -77,22 +78,26 @@ public class PlayerController : MonoBehaviour
         bool moved = false;
         if (Input.GetKey(KeyCode.W))
         {
-            transform.position += Vector3.forward * Time.deltaTime * movementSpeed;
+            rig.MovePosition(transform.position + Vector3.forward * Time.deltaTime * movementSpeed);
+            //transform.position += Vector3.forward * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            transform.position += Vector3.back * Time.deltaTime * movementSpeed;
+             rig.MovePosition(transform.position + Vector3.back * Time.deltaTime * movementSpeed);
+            //transform.position += Vector3.back * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            transform.position += Vector3.left * Time.deltaTime * movementSpeed;
+             rig.MovePosition(transform.position + Vector3.left * Time.deltaTime * movementSpeed);
+            //transform.position += Vector3.left * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.position += Vector3.right * Time.deltaTime * movementSpeed;
+             rig.MovePosition(transform.position + Vector3.right * Time.deltaTime * movementSpeed);
+            //transform.position += Vector3.right * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (moved)
@@ -103,6 +108,7 @@ public class PlayerController : MonoBehaviour
         {
             playerAnimator.SetInteger("Run", 0);
         }
+        rig.velocity = Vector3.zero;
     }
 
     private void RotatePlayerTowardsMouse()
