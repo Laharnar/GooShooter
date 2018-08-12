@@ -15,13 +15,17 @@ public class PlayerController : MonoBehaviour
     public Transform gunExitPoint;
     public GameObject playButton;
     public UiController uiController;
-
+    public Rigidbody rig;
+    public AudioSource shootSfx;
     public int hp = 100;
 
+    private float timeOfLastShot = 0;
     private void Start()
     {
         cameraOffset = cam.transform.position;
         cameraOffset.y = 0;
+
+        StartCoroutine(GetDmgFromOoze());
     }
     private void Update()
     {
@@ -38,10 +42,26 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateShooting()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
+            if(Time.realtimeSinceStartup - timeOfLastShot < 0.1)
+            {
+                return;
+            }
+            timeOfLastShot = Time.realtimeSinceStartup;
             playerAnimator.SetTrigger("Shoot");
-            StartCoroutine(ShootWithDelay(0.3f));
+            StartCoroutine(ShootWithDelay(0.1f));
+        }
+    }
+
+    IEnumerator GetDmgFromOoze() {
+        while (true) {
+            yield return new WaitForSeconds(0.3f);
+            Block b = GameManager.GetBlock(transform.position);
+            if (b) {
+                if (b.isSlimeActive)
+                    Damage(GameManager.Instance.oozeDmg);
+            }
         }
     }
 
@@ -62,7 +82,9 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         Bullet bullet = Instantiate<Bullet>(bulletPrefab, gunExitPoint.position, Quaternion.identity, null);
-        bullet.Shoot(transform.forward);
+        bullet.Shoot(transform.forward + transform.right * UnityEngine.Random.Range(-1f, 1f)* 0.15f);
+        shootSfx.pitch = UnityEngine.Random.Range(0.7f, 1f);
+        shootSfx.Play();
     }
 
     private void CameraFollowPlayer()
@@ -77,22 +99,26 @@ public class PlayerController : MonoBehaviour
         bool moved = false;
         if (Input.GetKey(KeyCode.W))
         {
-            transform.position += Vector3.forward * Time.deltaTime * movementSpeed;
+            rig.MovePosition(transform.position + Vector3.forward * Time.deltaTime * movementSpeed);
+            //transform.position += Vector3.forward * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            transform.position += Vector3.back * Time.deltaTime * movementSpeed;
+             rig.MovePosition(transform.position + Vector3.back * Time.deltaTime * movementSpeed);
+            //transform.position += Vector3.back * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            transform.position += Vector3.left * Time.deltaTime * movementSpeed;
+             rig.MovePosition(transform.position + Vector3.left * Time.deltaTime * movementSpeed);
+            //transform.position += Vector3.left * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.position += Vector3.right * Time.deltaTime * movementSpeed;
+             rig.MovePosition(transform.position + Vector3.right * Time.deltaTime * movementSpeed);
+            //transform.position += Vector3.right * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (moved)
@@ -103,6 +129,7 @@ public class PlayerController : MonoBehaviour
         {
             playerAnimator.SetInteger("Run", 0);
         }
+        rig.velocity = Vector3.zero;
     }
 
     private void RotatePlayerTowardsMouse()

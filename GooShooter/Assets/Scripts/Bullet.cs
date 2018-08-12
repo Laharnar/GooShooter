@@ -12,8 +12,14 @@ public class Bullet : MonoBehaviour
 
     public void Shoot(Vector3 direction)
     {
-        rig.AddForce(direction * speed);
+        rig.AddForce(direction.normalized * speed);
     }
+
+    private void Start()
+    {
+        Destroy(gameObject, 5);
+    }
+
 
     private void OnTriggerEnter(Collider collision)
     {
