@@ -20,6 +20,9 @@ public class EnemyController : MonoBehaviour
     public ParticleSystem onDeathPs;
     public SkinnedMeshRenderer smr;
 
+    public AudioSource hitSfx;
+    public AudioSource deathSfx;
+
     // Use this for initialization
     void Start()
     {
@@ -51,12 +54,13 @@ public class EnemyController : MonoBehaviour
     private bool isAlive = true;
     public void Damage(int dmg)
     {
-        
         if (!isAlive)
         {
             return;
         }
         health -= dmg;
+        hitSfx.pitch = UnityEngine.Random.Range(0.8f, 1.1f);
+        hitSfx.Play();
         onHitPs.Play();
         if (health <= 0)
         {
@@ -71,6 +75,7 @@ public class EnemyController : MonoBehaviour
         if (coll)
             coll.enabled = false;
         anim.SetTrigger("Death");
+
         Invoke("DelayedDeath", 1);
     }
 
@@ -79,6 +84,8 @@ public class EnemyController : MonoBehaviour
         onDeathPs.Play();
         SpawnOoze(transform.position);
         smr.enabled = false;
+        deathSfx.pitch = UnityEngine.Random.Range(0.8f, 1.1f);
+        deathSfx.Play();
         Destroy(gameObject, 2);
     }
 

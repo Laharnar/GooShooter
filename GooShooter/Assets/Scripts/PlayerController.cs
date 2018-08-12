@@ -17,8 +17,9 @@ public class PlayerController : MonoBehaviour
     public UiController uiController;
     public Rigidbody rig;
     public AudioSource shootSfx;
+    public AudioSource deathSfx;
     public int hp = 100;
-
+    public CapsuleCollider col;
     private float timeOfLastShot = 0;
     private void Start()
     {
@@ -29,6 +30,8 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        if (!isAlive)
+            return;
         if (playButton.gameObject.activeSelf)
         {
             return;
@@ -44,7 +47,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
-            if(Time.realtimeSinceStartup - timeOfLastShot < 0.1)
+            if (Time.realtimeSinceStartup - timeOfLastShot < 0.1)
             {
                 return;
             }
@@ -54,11 +57,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    IEnumerator GetDmgFromOoze() {
-        while (true) {
+    IEnumerator GetDmgFromOoze()
+    {
+
+        while (true)
+        {
             yield return new WaitForSeconds(0.3f);
             Block b = GameManager.GetBlock(transform.position);
-            if (b) {
+            if (b)
+            {
                 if (b.isSlimeActive)
                     Damage(GameManager.Instance.oozeDmg);
             }
@@ -67,22 +74,32 @@ public class PlayerController : MonoBehaviour
 
     internal void Damage(int slimeDmg)
     {
+        if (!isAlive)
+            return;
         hp -= slimeDmg;
         if (hp <= 0)
             Death();
     }
-
+    [System.NonSerialized] public bool isAlive = true;
     private void Death()
     {
-        Destroy(gameObject);
+        col.enabled = false;
+        isAlive = false;
+        deathSfx.Play();
+        playerAnimator.SetTrigger("Death");
+        //Destroy(gameObject, 2);
+        StartCoroutine(ShowEndScreenWithDelay(3));
+    }
+    private IEnumerator ShowEndScreenWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
         uiController.ShowReplayScreen();
     }
-
     private IEnumerator ShootWithDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         Bullet bullet = Instantiate<Bullet>(bulletPrefab, gunExitPoint.position, Quaternion.identity, null);
-        bullet.Shoot(transform.forward + transform.right * UnityEngine.Random.Range(-1f, 1f)* 0.15f);
+        bullet.Shoot(transform.forward + transform.right * UnityEngine.Random.Range(-1f, 1f) * 0.15f);
         shootSfx.pitch = UnityEngine.Random.Range(0.7f, 1f);
         shootSfx.Play();
     }
@@ -105,19 +122,19 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKey(KeyCode.S))
         {
-             rig.MovePosition(transform.position + Vector3.back * Time.deltaTime * movementSpeed);
+            rig.MovePosition(transform.position + Vector3.back * Time.deltaTime * movementSpeed);
             //transform.position += Vector3.back * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (Input.GetKey(KeyCode.A))
         {
-             rig.MovePosition(transform.position + Vector3.left * Time.deltaTime * movementSpeed);
+            rig.MovePosition(transform.position + Vector3.left * Time.deltaTime * movementSpeed);
             //transform.position += Vector3.left * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (Input.GetKey(KeyCode.D))
         {
-             rig.MovePosition(transform.position + Vector3.right * Time.deltaTime * movementSpeed);
+            rig.MovePosition(transform.position + Vector3.right * Time.deltaTime * movementSpeed);
             //transform.position += Vector3.right * Time.deltaTime * movementSpeed;
             moved = true;
         }
