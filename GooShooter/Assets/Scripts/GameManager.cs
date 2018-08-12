@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
 	private static GameManager instance;
     public GameObject player;
 
+    public Material[] slimeMaterials;
+    
     public static GameManager Instance
     {
         get
