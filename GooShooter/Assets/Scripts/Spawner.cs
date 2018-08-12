@@ -34,9 +34,11 @@ public class Spawner:MonoBehaviour {
     }
 
     IEnumerator SpawnWave(SpawnPoint[] spawnPoints, Transform[] unitPrefs) {
-        for (int i = 0; i < spawnPoints.Length && i<unitPrefs.Length; i++) {
-            yield return new WaitForSeconds(0.5f);
-            Spawn(spawnPoints[i], unitPrefs[i]);
+        while (true) {
+            for (int i = 0; i < spawnPoints.Length && i < unitPrefs.Length; i++) {
+                yield return new WaitForSeconds(0.8f);
+                Spawn(spawnPoints[i], unitPrefs[i]);
+            }
         }
     }
 
