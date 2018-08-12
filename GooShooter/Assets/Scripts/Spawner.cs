@@ -3,6 +3,9 @@ using UnityEngine;
 public class Spawner:MonoBehaviour {
 
     public Transform enemyPref;
+    int activeRate = 0;
+    public int[] requiredCounter = new int[3] {0, 100, 400 };
+    public float[] spawnRates = new float[3] { 0.9f, 0.3f, 0.1f };
 
     private void Start() {
         Area a = GameObject.FindObjectOfType<Area>();
@@ -34,10 +37,18 @@ public class Spawner:MonoBehaviour {
     }
 
     IEnumerator SpawnWave(SpawnPoint[] spawnPoints, Transform[] unitPrefs) {
+        int counter = 0;
+        float multiplier = spawnRates[activeRate];
         while (true) {
             for (int i = 0; i < spawnPoints.Length && i < unitPrefs.Length; i++) {
-                yield return new WaitForSeconds(0.8f);
+                yield return new WaitForSeconds(multiplier);
                 Spawn(spawnPoints[i], unitPrefs[i]);
+                counter++;
+                if (activeRate+1 < requiredCounter.Length 
+                    && counter == requiredCounter[activeRate+1]) {
+                    activeRate++;
+                    multiplier= spawnRates[activeRate];
+                }
             }
         }
     }
