@@ -10,6 +10,12 @@ public class LevelChunkGenerator:MonoBehaviour {
     public int chunkCount = 4;
     public int w=30, l=30;
     public float rndHeight = 0.2f;
+    public float lowHeightBlock = 0.2f;
+    public float highHeighBlock = 0.2f;
+    /// <summary>
+    /// Chance to get randomized block
+    /// </summary>
+    public float rndHeightChance = 0.4f;
     public float cutPercentage = 0.9f;
 
     private void Start() {
@@ -260,7 +266,16 @@ public class LevelChunkGenerator:MonoBehaviour {
                 if (finalMap[x, y] == 0)
                     finalMap[x, y] = 1;
                 Quaternion rot = Quaternion.Euler(0, Random.Range(0, 8)*90, 0);
-                Transform t = Instantiate(cubePrefs[finalMap[x, y]-1], new Vector3(i,Random.Range(0, rndHeight), j), rot, ground.transform);
+                // choose random max or min or nothing height
+                Vector3 pos = new Vector3(i, 0, j);
+                if (Random.Range(0f, 1f) < rndHeightChance) {
+                    if (Random.Range(0f, 1f) < 0.5f) {
+                        pos = new Vector3(i, lowHeightBlock, j);
+                    } else {
+                        pos = new Vector3(i, highHeighBlock, j);
+                    }
+                }
+                Transform t = Instantiate(cubePrefs[finalMap[x, y]-1], pos, rot, ground.transform);
             }
         }
 
