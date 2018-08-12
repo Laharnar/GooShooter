@@ -111,31 +111,38 @@ public class PlayerController : MonoBehaviour
 
     private void HandlePlayerMovement()
     {
+        Vector3 moveDir = Vector3.zero;
         bool moved = false;
         if (Input.GetKey(KeyCode.W))
         {
-            rig.MovePosition(transform.position + Vector3.forward * Time.deltaTime * movementSpeed);
+            moveDir += Vector3.forward;
+            //rig.MovePosition(transform.position + Vector3.forward * Time.deltaTime * movementSpeed);
             //transform.position += Vector3.forward * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            rig.MovePosition(transform.position + Vector3.back * Time.deltaTime * movementSpeed);
+            moveDir += Vector3.back;
+            //rig.MovePosition(transform.position + Vector3.back * Time.deltaTime * movementSpeed);
             //transform.position += Vector3.back * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            rig.MovePosition(transform.position + Vector3.left * Time.deltaTime * movementSpeed);
+            moveDir += Vector3.left;
+            //rig.MovePosition(transform.position + Vector3.left * Time.deltaTime * movementSpeed);
             //transform.position += Vector3.left * Time.deltaTime * movementSpeed;
             moved = true;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            rig.MovePosition(transform.position + Vector3.right * Time.deltaTime * movementSpeed);
+            moveDir += Vector3.right;
+            //rig.MovePosition(transform.position + Vector3.right * Time.deltaTime * movementSpeed);
             //transform.position += Vector3.right * Time.deltaTime * movementSpeed;
             moved = true;
         }
+
+        rig.MovePosition(transform.position +moveDir.normalized * Time.deltaTime * movementSpeed);
         if (moved)
         {
             playerAnimator.SetInteger("Run", 1);
