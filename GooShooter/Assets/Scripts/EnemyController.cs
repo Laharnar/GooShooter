@@ -41,7 +41,13 @@ public class EnemyController : MonoBehaviour {
 
     private void Death() {
         // TODO: spawn effects/death animation
+        RaycastHit hit;
+        if(Physics.Raycast(new Ray(transform.position, Vector3.down*2), out hit)) {
+            Transform groundCube = hit.transform;
+            groundCube.GetComponent<Block>().ToggleSlime (true);
+        }
         Destroy(gameObject);
+
     }
 
     public void SpawnOoze() {
