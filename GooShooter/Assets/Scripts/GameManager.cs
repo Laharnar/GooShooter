@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-	private static GameManager instance;
+    private static GameManager instance;
     public GameObject player;
 
     public Material[] slimeMaterials;
-    
+
     public static GameManager Instance
     {
         get
@@ -16,15 +17,21 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
+    
+    public void Restart()
+    {
+        SceneManager.LoadScene("Main", LoadSceneMode.Single);
+    }
 
-	private void Awake()
-	{
-		instance = this;
+    private void Awake()
+    {
+        instance = this;
 
-        if (player== null) {
+        if (player == null)
+        {
             player = GameObject.FindWithTag("Player");
         }
-	}
-	
-   
+    }
+
+
 }

@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
 
     public Bullet bulletPrefab;
     public Transform gunExitPoint;
+    public GameObject playButton;
+    public UiController uiController;
 
     public int hp = 100;
 
@@ -23,6 +25,11 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        if (playButton.gameObject.activeSelf)
+        {
+            return;
+        }
+
         HandlePlayerMovement();
         RotatePlayerTowardsMouse();
         CameraFollowPlayer();
@@ -38,14 +45,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    internal void Damage(int slimeDmg) {
+    internal void Damage(int slimeDmg)
+    {
         hp -= slimeDmg;
         if (hp <= 0)
             Death();
     }
 
-    private void Death() {
+    private void Death()
+    {
         Destroy(gameObject);
+        uiController.ShowReplayScreen();
     }
 
     private IEnumerator ShootWithDelay(float delay)
