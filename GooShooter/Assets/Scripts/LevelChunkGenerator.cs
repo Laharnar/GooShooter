@@ -1,12 +1,22 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+[System.Serializable]
+public class GroundSet {
+    public float percentage = 1;
+    public Transform[] cubes;
+
+    internal Transform Get() {
+        return cubes[Random.Range(0, cubes.Length)];
+    }
+}
+
 public class LevelChunkGenerator:MonoBehaviour {
 
     public float fillWithTexturesPerc = 1f;
 
     public Texture[] textures;
     public Transform[] levelDesignLib;
-    public Transform[] groundCubesLib;
+    public GroundSet[] groundCubesLib;
     public int chunkCount = 4;
     public int w=30, l=30;
     public float rndHeight = 0.2f;
@@ -51,7 +61,7 @@ public class LevelChunkGenerator:MonoBehaviour {
         return obstacles;
     }
 
-    public GameObject GenerateGroundArea(Transform[] cubePrefs, int pieces, int w, int l, float maxDist) {
+    public GameObject GenerateGroundArea(GroundSet[] cubePrefs, int pieces, int w, int l, float maxDist) {
         // v 2
         // pick num of different pieces, then generate floor from that number of points
         if (cubePrefs.Length < 2) return new GameObject("No ground generated.");
@@ -275,7 +285,10 @@ public class LevelChunkGenerator:MonoBehaviour {
                         pos = new Vector3(i, highHeighBlock, j);
                     }
                 }
-                Transform t = Instantiate(cubePrefs[finalMap[x, y]-1], pos, rot, ground.transform);
+
+                GroundSet set = cubePrefs[finalMap[x, y] - 1];
+
+                Transform t = Instantiate(set.Get(), pos, rot, ground.transform);
             }
         }
 
