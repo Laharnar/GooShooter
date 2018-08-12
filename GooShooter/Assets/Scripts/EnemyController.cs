@@ -38,16 +38,8 @@ public class EnemyController : MonoBehaviour {
     public void Damage(int dmg) {
         health -= dmg;
 
-        Vector3 snapPos = new Vector3(transform.position.x-transform.position.x%1, 0, transform.position.z-transform.position.z%1);
-        for (int i = 0; i < GameManager.Instance.groundObjs.Count; i++) {
-            Vector3 p = new Vector3(GameManager.Instance.groundObjs[i].transform.position.x, 0, GameManager.Instance.groundObjs[i].transform.position.z);
-            if (p == snapPos) {
-                GameManager.Instance.groundObjs[i].GetComponent<Block>().ToggleSlime(true);
-            }
-        }
-
-        //SpawnOoze(transform.position);
         if (health <= 0) {
+            SpawnOoze(transform.position);
             Death();
         }
     }
@@ -60,6 +52,13 @@ public class EnemyController : MonoBehaviour {
     }
 
     public void SpawnOoze(Vector3 pos) {
+        Block b = GameManager.GetBlock(transform.position);
+        if (b) {
+            if (!b.isSlimeActive)
+                b.ToggleSlime(true);
+        }
+
+        /*
         RaycastHit hit;
         if (Physics.Raycast(transform.position + Vector3.up / 2, Vector3.down, out hit, Mathf.Infinity, 1<<LayerMask.NameToLayer("Ground"))) {
             Debug.Log(hit.transform);
@@ -67,7 +66,7 @@ public class EnemyController : MonoBehaviour {
             if (groundCube.parent != null)
                 groundCube.parent.GetComponent<Block>().ToggleSlime(true);
             //Destroy(hit.transform.gameObject);
-        }
+        }*/
         // Debug.Log(hit.transform);
     }
     private void OnDrawGizmos() {

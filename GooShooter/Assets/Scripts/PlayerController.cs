@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     {
         cameraOffset = cam.transform.position;
         cameraOffset.y = 0;
+
+        StartCoroutine(GetDmgFromOoze());
     }
     private void Update()
     {
@@ -43,6 +45,17 @@ public class PlayerController : MonoBehaviour
         {
             playerAnimator.SetTrigger("Shoot");
             StartCoroutine(ShootWithDelay(0.3f));
+        }
+    }
+
+    IEnumerator GetDmgFromOoze() {
+        while (true) {
+            yield return new WaitForSeconds(0.3f);
+            Block b = GameManager.GetBlock(transform.position);
+            if (b) {
+                if (b.isSlimeActive)
+                    Damage(GameManager.Instance.oozeDmg);
+            }
         }
     }
 
