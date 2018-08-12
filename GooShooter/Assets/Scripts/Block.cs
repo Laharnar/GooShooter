@@ -7,9 +7,11 @@ public class Block : MonoBehaviour
     private MeshRenderer meshRenderer;
 
     [System.NonSerialized] public bool isSlimeActive = false;
-
+    
     private void Start()
     {
+        GameManager.Instance.objs.Add(transform);
+
         meshRenderer = GetComponentInChildren<MeshRenderer>();
         Material mat = meshRenderer.sharedMaterials[0];
 		Material[] materials = new Material[2];
