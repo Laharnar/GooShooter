@@ -30,12 +30,21 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Pause();
         instance = this;
 
         if (player == null)
         {
             player = GameObject.FindWithTag("Player");
         }
+    }
+
+    private void Pause() {
+        Time.timeScale = 0;
+    }
+
+    public void ResumeTime() {
+        Time.timeScale = 1;
     }
 
     internal static Block GetBlock(Vector3 position) {
