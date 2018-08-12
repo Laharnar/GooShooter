@@ -13,7 +13,8 @@ public class EnemyController : MonoBehaviour {
 
     public Animator anim;
     public NavMeshAgent nav;
-    public Collider collider;
+    public Collider coll;
+
 
     // Use this for initialization
     void Start() {
@@ -36,28 +37,35 @@ public class EnemyController : MonoBehaviour {
 
     public void Damage(int dmg) {
         health -= dmg;
-        SpawnOoze(transform.position);
+
+        Vector3 snapPos = new Vector3(transform.position.x-transform.position.x%1, 0, transform.position.z-transform.position.z%1);
+        for (int i = 0; i < GameManager.Instance.groundObjs.Count; i++) {
+            Vector3 p = new Vector3(GameManager.Instance.groundObjs[i].transform.position.x, 0, GameManager.Instance.groundObjs[i].transform.position.z);
+            if (p == snapPos) {
+                GameManager.Instance.groundObjs[i].GetComponent<Block>().ToggleSlime(true);
+            }
+        }
+
+        //SpawnOoze(transform.position);
         if (health <= 0) {
             Death();
         }
     }
 
     private void Death() {
-
-        collider.enabled = false;
+        if (coll)
+        coll.enabled = false;
         anim.SetTrigger("Death");
         Destroy(gameObject, 1);
     }
 
     public void SpawnOoze(Vector3 pos) {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position + Vector3.up / 2, Vector3.down, out hit, Mathf.Infinity)) {
+        if (Physics.Raycast(transform.position + Vector3.up / 2, Vector3.down, out hit, Mathf.Infinity, 1<<LayerMask.NameToLayer("Ground"))) {
             Debug.Log(hit.transform);
             Transform groundCube = hit.transform;
             if (groundCube.parent != null)
                 groundCube.parent.GetComponent<Block>().ToggleSlime(true);
-            else 
-                groundCube.GetComponent<Block>().ToggleSlime(true);
             //Destroy(hit.transform.gameObject);
         }
         // Debug.Log(hit.transform);

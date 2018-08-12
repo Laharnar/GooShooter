@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
 
     public Material[] slimeMaterials;
 
+    public List<Transform> groundObjs = new List<Transform>();
+
     public static GameManager Instance
     {
         get
