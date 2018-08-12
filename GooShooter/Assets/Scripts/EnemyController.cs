@@ -16,6 +16,12 @@ public class EnemyController : MonoBehaviour
     public NavMeshAgent nav;
     public Collider coll;
 
+    public ParticleSystem onHitPs;
+    public ParticleSystem onDeathPs;
+    public SkinnedMeshRenderer smr;
+
+    public AudioSource hitSfx;
+    public AudioSource deathSfx;
 
     // Use this for initialization
     void Start()
@@ -48,16 +54,20 @@ public class EnemyController : MonoBehaviour
     private bool isAlive = true;
     public void Damage(int dmg)
     {
-        health -= dmg;
         if (!isAlive)
         {
             return;
         }
+        health -= dmg;
+        hitSfx.pitch = UnityEngine.Random.Range(0.8f, 1.1f);
+        hitSfx.Play();
+        onHitPs.Play();
         if (health <= 0)
         {
             isAlive = false;
             Death();
         }
+
     }
 
     private void Death()
@@ -65,13 +75,18 @@ public class EnemyController : MonoBehaviour
         if (coll)
             coll.enabled = false;
         anim.SetTrigger("Death");
+
         Invoke("DelayedDeath", 1);
     }
 
     private void DelayedDeath()
     {
+        onDeathPs.Play();
         SpawnOoze(transform.position);
-        Destroy(gameObject);
+        smr.enabled = false;
+        deathSfx.pitch = UnityEngine.Random.Range(0.8f, 1.1f);
+        deathSfx.Play();
+        Destroy(gameObject, 2);
     }
 
     public void SpawnOoze(Vector3 pos)
