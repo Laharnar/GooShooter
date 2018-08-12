@@ -6,7 +6,8 @@ using UnityEngine.AI;
 /// <summary>
 /// Follow player, on 
 /// </summary>
-public class EnemyController : MonoBehaviour {
+public class EnemyController : MonoBehaviour
+{
 
     public int health = 5;
     public int slimeDmg = 10;
@@ -17,43 +18,67 @@ public class EnemyController : MonoBehaviour {
 
 
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
         tag = "Enemy";
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
+        if (!isAlive)
+        {
+            nav.Stop();
+            return;
+        }
+            
         if (GameManager.Instance.player != null)
             nav.destination = GameManager.Instance.player.transform.position;
     }
 
 
-    private void OnTriggerEnter(Collider collision) {
-        if (GameManager.Instance.player && collision.transform == GameManager.Instance.player.transform) {
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (GameManager.Instance.player && collision.transform == GameManager.Instance.player.transform)
+        {
             GameManager.Instance.player.GetComponent<PlayerController>().Damage(slimeDmg);
             Death();
         }
     }
-
-    public void Damage(int dmg) {
+    private bool isAlive = true;
+    public void Damage(int dmg)
+    {
         health -= dmg;
-
-        if (health <= 0) {
-            SpawnOoze(transform.position);
+        if (!isAlive)
+        {
+            return;
+        }
+        if (health <= 0)
+        {
+            isAlive = false;
             Death();
         }
     }
 
-    private void Death() {
+    private void Death()
+    {
         if (coll)
-        coll.enabled = false;
+            coll.enabled = false;
         anim.SetTrigger("Death");
-        Destroy(gameObject, 1);
+        Invoke("DelayedDeath", 1);
     }
 
-    public void SpawnOoze(Vector3 pos) {
+    private void DelayedDeath()
+    {
+        SpawnOoze(transform.position);
+        Destroy(gameObject);
+    }
+
+    public void SpawnOoze(Vector3 pos)
+    {
         Block b = GameManager.GetBlock(transform.position);
-        if (b) {
+        if (b)
+        {
             if (!b.isSlimeActive)
                 b.ToggleSlime(true);
         }
@@ -69,10 +94,12 @@ public class EnemyController : MonoBehaviour {
         }*/
         // Debug.Log(hit.transform);
     }
-    private void OnDrawGizmos() {
+    private void OnDrawGizmos()
+    {
         Gizmos.DrawRay(new Ray(transform.position + Vector3.up / 2, Vector3.down));
         RaycastHit hit;
-        if (Physics.Raycast(new Ray(transform.position + Vector3.up / 2, Vector3.down), out hit, Mathf.Infinity)) {
+        if (Physics.Raycast(new Ray(transform.position + Vector3.up / 2, Vector3.down), out hit, Mathf.Infinity))
+        {
 
         }
     }
